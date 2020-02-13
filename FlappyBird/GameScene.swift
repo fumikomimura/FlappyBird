@@ -7,7 +7,9 @@
 //https://teratail.com/questions/42374　heartアイテム入れるのに参考
 //アイテム入力中　エラー多すぎ
 //アイテム取得音楽入力中
-
+//ViewControllerが設定されていないためアイテムが出てこない
+//spritketにTextureが設定されていないs
+//2/13〜
 
 //SpriteketをインポートするためUIkitから置き換えた
 import SpriteKit
@@ -58,6 +60,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scrollNode.addChild(wallNode)
         
         //アイテム用ノード　❤️ 課題　追加
+        let texture = itemNode //spritNodeに画像（texture）を設定する？
         itemNode = SKSpriteNode()
         scrollNode.addChild(itemNode)
         
