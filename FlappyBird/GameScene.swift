@@ -27,8 +27,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let birdCategory: UInt32 = 1 << 0     //0...00001
     let groundCategory: UInt32 = 1 << 1   //0...00010
     let wallCategory: UInt32 = 1 << 2     //0...00100
-    let scoreCategory: UInt32 = 1 << 2    //0...01000
-    let itemCategory: UInt32 = 1 << 3     //❤️ 課題　追加
+    let scoreCategory: UInt32 = 1 << 3    //0...01000
+    let itemCategory: UInt32 = 1 << 4     //❤️ 課題　追加
     
     //スコア用
     var score = 0
@@ -392,6 +392,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let itemTexture = SKTexture(imageNamed: "heart")
         itemTexture.filteringMode = .linear
         
+        // アイテム関連のノードを乗せるノードを作成　creatAnimationの外に書く
+        //let item = SKSpriteNode(imageNamed:"")と書く
+        let item = SKSpriteNode(imageNamed: "heart" )
+        item.position = CGPoint(x: self.frame.size.width + itemTexture.size().width / 2, y: 0)
+        item.zPosition = -50 // 雲より手前、地面より奥
+        
+        
         //移動する距離を計算  壁と壁の間に来るようにしたい　＋1でいける？
         let movingDistance = CGFloat(self.frame.size.width + itemTexture.size().width)
         
@@ -413,111 +420,106 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ❤️下の壁のY軸下限位置(中央位置から下方向の最大振れ幅で下の壁を表示する位置)を計算　←いらない！？
         let groundSize = SKTexture(imageNamed: "ground").size()
         let center_y = groundSize.height +  (self.frame.size.height - groundSize.height) / 2
-      //  let under_wall_lowest_y = center_y - slit_length / 2 - wallTexture.size().height / 2 - random_y_range / 2
+       // let under_wall_lowest_y = center_y - slit_length / 2 - wallTexture.size().height / 2 - random_y_range / 2
         
         
         // アイテムを生成するアクションを作成
         let createItemAnimation = SKAction.run({
-            // アイテム関連のノードを乗せるノードを作成
-            let item = SKSpriteNode()
-            item.position = CGPoint(x: self.frame.size.width + itemTexture.size().width / 2, y: 0)
-            item.zPosition = -50 // 雲より手前、地面より奥
             
             // 0〜random_y_rangeまでのランダム値を生成
             let random_y = CGFloat.random(in: 0..<random_y_range)
             // Y軸の下限にランダムな値を足して、下の壁のY座標を決定
-       //   let under_wall_y = under_wall_lowest_y + random_y
+           // let under_wall_y = under_wall_lowest_y + random_y
             
             //上下の壁の作成は入力せず
             
             item.run(itemAnimation)
             
             self.itemNode.addChild(item)
-        })
-    }
-        //フィールドに出現するハートの位置を指定
-        func makingHeartPosition() -> [CGPoint] {
-            //画面を元に座標を求めるための倍率を格納
-            let XPos = [0.3, 0.4, 0.5, 0.6, 0.7]
-            let YPos = [0.45, 0.55, 0.65, 0.75]
             
-            var itemPositions: [CGPoint] = []
-            for y in YPos {
-                for x in XPos {
-                    let p = CGPoint(x: self.size.width * CGFloat(x), y: self.size.height * CGFloat(y))
-                    itemPositions.append(p)
-                }
-            }
-            return itemPositions
+        })
+        addChild(item)
     }
-        //ハートのそれぞれの位置が格納された配列　　SKSpriteNodeに変更したから不要
-  //      let heartPositions = makingHeartPosition()
-  //      let texture = SKTexture(imageNamed: "heart")
+    
+    
+    //フィールドに出現するハートの位置を指定
+    func makingHeartPosition() -> [CGPoint] {
+        //画面を元に座標を求めるための倍率を格納
+        let XPos = [0.3, 0.4, 0.5, 0.6, 0.7]
+        let YPos = [0.45, 0.55, 0.65, 0.75]
         
-        // for i in 0...19 {
-        //  let heart = makeHeart(texture)
-        //   heart.position = heartPositions[i]
-        //    heart.name = "heart\(i)"
-        //    hearts[i] = (heart, heart.position, true)
-        //    self.addChild(heart)
+        var itemPositions: [CGPoint] = []
+        for y in YPos {
+            for x in XPos {
+                let p = CGPoint(x: self.size.width * CGFloat(x), y: self.size.height * CGFloat(y))
+                itemPositions.append(p)
+            }
+        }
+        return itemPositions
     }
-
-
-        //一つのハートを生成する処理
-        func makeHeart(texture: SKTexture) -> SKSpriteNode {
-           let heart = SKSpriteNode(texture: texture)
-           heart.physicsBody = SKPhysicsBody(texture: texture, size: texture.size())
-           heart.physicsBody?.isDynamic = false
-           heart.physicsBody?.isResting = true
-           heart.physicsBody?.allowsRotation = true
-           heart.physicsBody?.contactTestBitMask = 1
-           heart.physicsBody?.restitution = 1.0
-           heart.physicsBody?.friction = 1.0
+    //ハートのそれぞれの位置が格納された配列　　SKSpriteNodeに変更したから不要
+    //let heartPositions = makingHeartPosition()
+    //    let texture = SKTexture(imageNamed: "heart")
     
-    // let scaleUp = SKAction.scaleTo(1.5, duration: 1.0)
+    // for i in 0...19 {
+    //  let heart = makeHeart(texture)
+    //   heart.position = heartPositions[i]
+    //    heart.name = "heart\(i)"
+    //    hearts[i] = (heart, heart.position, true)
+    //    self.addChild(heart)
+}
+
+//ここから違う？
+//一つのハートを生成する処理
+func makeHeart(texture: SKTexture) -> SKSpriteNode {
+    let heart = SKSpriteNode(texture: texture)
+    heart.physicsBody = SKPhysicsBody(texture: texture, size: texture.size())
+    heart.physicsBody?.isDynamic = false
+    heart.physicsBody?.isResting = true
+    heart.physicsBody?.allowsRotation = true
+    heart.physicsBody?.contactTestBitMask = 1
+    heart.physicsBody?.restitution = 1.0
+    heart.physicsBody?.friction = 1.0
+    
+    //    let scaleUp = SKAction.scaleTo(1.5, duration: 1.0)
     //  let scaleDw = SKAction.scaleTo(1.0, duration: 1.0)
-    // let scaleUpDown = SKAction.repeatActionForever(scaleUpDown))
+    //    let scaleUpDown = SKAction.repeatActionForever(scaleUpDown))
     
-           return heart
+    return heart
     
     //ハートを消す処理
     func removeHeart() {
     }
-    
-    //-----ここまで-----
     //https://hawksnowlog.blogspot.com/2017/11/spritekit-with-sound-effects.html
     //❤️アイテム取得音を設定
     func play(music:String, loop: Bool) {
-       if #available(iOS 11.1, *) {
-        let play = SKAudioNode(fileNamed: "itemget")
-   //     pley.autoPlayLooped = loop
-    //    self.addChild(play)
-     //   self.run(
-        SKAction.sequence([SKAction.run {
-            play.run(SKAction.play())
-            }
-        ])
-           // )
-   //     } else {
-    //         let play = SKAction.playSoundFileNamed(Itemget,waitForCompletion: true)
-    //        self.run(play)
+        if #available(iOS 11.1, *) {
+            let play = SKAudioNode(fileNamed: "itemget")
+            //     pley.autoPlayLooped = loop
+            //    self.addChild(play)
+            //   self.run(
+            SKAction.sequence([SKAction.run {
+                play.run(SKAction.play())
+                }
+            ])
+            //       )
+        } else {
+            //      let play = SKAction.playSoundFileNamed(Itemget,waitForCompletion: true)
+            //      self.run(play)
+        }
+        
     }
     
-}
-
-
-/*
- // MARK: - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
- // Get the new view controller using segue.destination.
- // Pass the selected object to the new view controller.
- }
- */
-
-
-
-
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass
+     the selected object to the new view controller.
+     }
+     */
 }
 
