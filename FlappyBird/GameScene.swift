@@ -522,7 +522,7 @@ func setupItem() {
     //            //  play.run()
     //        }
     //}
-}
+
 func play(music:String, loop: Bool) {
     if #available(iOS 11.1, *) {
         let play = SKAudioNode(fileNamed: "itemget")
@@ -531,14 +531,14 @@ func play(music:String, loop: Bool) {
             SKAction.sequence([//SKAction.wait(forDuration: 0.1),
                 SKAction.run {
                     play.run(SKAction.play())
-                }
+        }
             ]))
     } else {
         let play = SKAction.playSoundFileNamed("itemget" , waitForCompletion: true)
         self.run(play)
     }
+    }
 }
-
 
 /*
  // MARK: - Navigation
