@@ -76,7 +76,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         //let playSound = SKAudioNode.init(fileNamed: "itemget")　　WEBから
         // self.addChild(playSound)
-             run(sound)  //⭐️run の使い方調べる必要あり
+        run(sound)  //⭐️run の使い方調べる必要あり
     }
     func restart() {
         score = 0
@@ -588,7 +588,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             item.addChild(subItem)
             
-            //        // 0〜random_y_rangeまでのランダム値を生成
+            //        // 0〜random_y_rangeまでのランダム値を生成　　いらない？
             //        let random_y = CGFloat.random(in: 0..<random_y_range)
             // Y軸の下限にランダムな値を足して、下の壁のY座標を決定
             // let under_item_y = under_item_lowest_y + random_y
@@ -634,6 +634,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 }
 //https://hawksnowlog.blogspot.com/2017/11/spritekit-with-sound-effects.html
 //https://tukumosanzou.hatenablog.com/entry/2018/07/10/010153
+//calssの外にある　中に入れる必要あり
 //アイテム取得音を設定
 //func play(music:String, loop: Bool) {
 //    if #available(iOS 11.1, *) {
